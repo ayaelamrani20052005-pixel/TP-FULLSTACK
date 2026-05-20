@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  admin
+  etudiant
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  nom         String       @db.VarChar(100)
+  prenom      String       @db.VarChar(100)
+  email       String       @unique @db.VarChar(100)
+  password    String       @db.VarChar(255)
+  role        Role
+  inscription Inscription?
+}
+
+model Formation {
+  id           Int           @id @default(autoincrement())
+  titre        String        @db.VarChar(200)
+  duree        Int
+  inscriptions Inscription[]
+}
+
+model Inscription {
+  id           Int       @id @default(autoincrement())
+  etudiant_id  Int       @unique
+  formation_id Int
+  etudiant     User      @relation(fields: [etudiant_id], references: [id])
+  formation    Formation @relation(fields: [formation_id], references: [id])
+}
